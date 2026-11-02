@@ -21,6 +21,7 @@ Q_MOC_INCLUDE("TerminalSession.h")
 
 namespace Kwi
 {
+class ContainerRegistry;
 class TerminalSettings;
 class TerminalPresets;
 class AppShortcuts;
@@ -77,6 +78,7 @@ private:
 
     TerminalSettings *m_settings;
     TerminalPresets *m_presets;
+    ContainerRegistry *m_containers;
     AppShortcuts *m_shortcuts;
     TerminalPaletteModel *m_palettes;
     QList<WindowContext *> m_windows{};

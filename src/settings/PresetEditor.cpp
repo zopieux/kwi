@@ -40,6 +40,16 @@ QString PresetEditor::command() const
     return m_command;
 }
 
+QString PresetEditor::container() const
+{
+    return m_container;
+}
+
+bool PresetEditor::inheritContainerContext() const
+{
+    return m_inheritContainerContext;
+}
+
 int PresetEditor::directoryMode() const
 {
     return m_directoryMode;
@@ -81,8 +91,9 @@ bool PresetEditor::isBuiltin() const
 
 bool PresetEditor::isDirty() const
 {
-    return m_selectedId.isEmpty() || m_name != m_selectedName || m_command != m_savedCommand || m_directoryMode != m_savedDirectoryMode
-        || m_directory != m_savedDirectory || m_environment != m_savedEnvironment;
+    return m_selectedId.isEmpty() || m_name != m_selectedName || m_command != m_savedCommand || m_container != m_savedContainer
+        || m_inheritContainerContext != m_savedInheritContainerContext || m_directoryMode != m_savedDirectoryMode || m_directory != m_savedDirectory
+        || m_environment != m_savedEnvironment;
 }
 
 bool PresetEditor::setError(const QString &error)
@@ -109,6 +120,24 @@ void PresetEditor::setCommand(const QString &newCommand)
 {
     if (m_command != newCommand) {
         m_command = newCommand;
+
+        Q_EMIT changed();
+    }
+}
+
+void PresetEditor::setContainer(const QString &newContainer)
+{
+    if (m_container != newContainer) {
+        m_container = newContainer;
+
+        Q_EMIT changed();
+    }
+}
+
+void PresetEditor::setInheritContainerContext(bool inherit)
+{
+    if (m_inheritContainerContext != inherit) {
+        m_inheritContainerContext = inherit;
 
         Q_EMIT changed();
     }
@@ -226,6 +255,10 @@ void PresetEditor::loadValues(const QString &presetName)
     m_name = preset->name;
     m_command = KShell::joinArgs(preset->launch.command);
     m_savedCommand = m_command;
+    m_container = preset->launch.container;
+    m_savedContainer = m_container;
+    m_inheritContainerContext = preset->launch.inheritContainerContext;
+    m_savedInheritContainerContext = m_inheritContainerContext;
     m_directoryMode = int(preset->launch.directoryMode);
     m_savedDirectoryMode = m_directoryMode;
     m_directory = preset->launch.directory;
@@ -304,6 +337,8 @@ bool PresetEditor::save()
     launch.directoryMode = static_cast<LaunchSettings::DirectoryMode>(m_directoryMode);
     launch.directory = launch.directoryMode == LaunchSettings::DirectoryMode::Custom ? m_directory : QString{};
     launch.environment = m_environment;
+    launch.container = m_container.trimmed();
+    launch.inheritContainerContext = m_inheritContainerContext;
     QString error{};
 
     if (!validateLaunchSettings(launch, &error)) {

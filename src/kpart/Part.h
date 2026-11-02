@@ -32,6 +32,7 @@ class QWidget;
 namespace Kwi
 {
 class DesktopIntegration;
+class ContainerRegistry;
 class SessionModel;
 class TerminalPresets;
 class TerminalSession;
@@ -123,6 +124,7 @@ private:
 
     TerminalSettings *m_settings;
     TerminalPresets *m_presets;
+    ContainerRegistry *m_containers;
     SessionModel *m_sessions;
     DesktopIntegration *m_desktop;
     QTabWidget *m_tabs;

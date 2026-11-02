@@ -43,7 +43,7 @@ void checkRunningCommands(const QList<QPointer<TerminalSession>> &sessions, QObj
 
                 // Earlier replies may be stale by the time the last session responds.
                 const bool running = std::ranges::any_of(state->sessions, [](const auto &session) {
-                    return session && session->isBusy();
+                    return session && session->hasRunningCommand();
                 });
 
                 state->completed(running);
