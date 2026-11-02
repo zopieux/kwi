@@ -6,6 +6,7 @@
 #include "ContainerDetector.h"
 #include "ContainerInfo.h"
 #include "DistroboxDetector.h"
+#include "KapsuleDetector.h"
 #include "ToolboxDetector.h"
 
 #include <KLocalizedString>
@@ -17,7 +18,7 @@ namespace Kwi
 {
 ContainerRegistry::ContainerRegistry(QObject *parent)
     : QObject{parent}
-    , m_detectors{new ToolboxDetector{this}, new DistroboxDetector{this}}
+    , m_detectors{new ToolboxDetector{this}, new DistroboxDetector{this}, new KapsuleDetector{this}}
 {
     for (auto *detector : m_detectors) {
         connect(detector, &ContainerDetector::listContainersFinished, this, [this, detector](const QStringList &names) {

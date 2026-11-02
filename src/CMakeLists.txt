@@ -16,6 +16,7 @@ add_library(kwi-core STATIC
     containers/ShellContainerDetector.cpp
     containers/ToolboxDetector.cpp
     containers/DistroboxDetector.cpp
+    containers/KapsuleDetector.cpp
     containers/ContainerRegistry.cpp
 )
 kconfig_add_kcfg_files(kwi-core GENERATE_MOC settings/TerminalPreferences.kcfgc)
