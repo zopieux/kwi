@@ -255,6 +255,31 @@ SettingsPage {
             }
 
             Forms.FormEntry {
+                title: KI18n.i18nc("@label:textbox", "Container:")
+
+                contentItem: Controls.TextField {
+                    objectName: "presetContainer"
+                    Layout.fillWidth: true
+                    text: root.editor.container
+                    placeholderText: KI18n.i18nc("@info:placeholder", "Host (or toolbox:name, distrobox:name)")
+
+                    onTextEdited: root.editor.container = text
+                }
+            }
+
+            Forms.FormEntry {
+                title: KI18n.i18nc("@label:checkbox", "Container inheritance:")
+
+                contentItem: Controls.CheckBox {
+                    objectName: "presetInheritContainerContext"
+                    text: KI18n.i18nc("@option:check", "Enter same container as current session")
+                    checked: root.editor.inheritContainerContext
+
+                    onToggled: root.editor.inheritContainerContext = checked
+                }
+            }
+
+            Forms.FormEntry {
                 title: KI18n.i18nc("@label:listbox", "Starting folder:")
 
                 contentItem: Controls.ComboBox {

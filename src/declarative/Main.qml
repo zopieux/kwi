@@ -28,6 +28,7 @@ Kirigami.ApplicationWindow {
     required property AppShortcuts appShortcuts
     required property ColorSchemeModel terminalPalettes
     required property SessionModel sessionModel
+    required property ContainerRegistry containerRegistry
     required property DesktopIntegration desktopIntegration
 
     objectName: "mainWindow"
@@ -64,6 +65,24 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    function launchInContainer(type: string, name: string): void {
+        if (root.sessionModel.newSessionInContainer(type, name)) {
+            root.focusTerminal();
+
+        } else {
+            root.showPassiveNotification(KI18n.i18nc("@info", "The container is no longer available."));
+        }
+    }
+
+    function launchOnHost(): void {
+        if (root.sessionModel.newSessionOnHost()) {
+            root.focusTerminal();
+
+        } else {
+            root.showPassiveNotification(KI18n.i18nc("@info", "The terminal preset is no longer available."));
+        }
+    }
+
     component NewTabPresetMenu: Controls.Menu {
         id: presetMenu
 
@@ -85,6 +104,43 @@ Kirigami.ApplicationWindow {
 
             onObjectAdded: (index, object) => presetMenu.insertItem(index, object)
             onObjectRemoved: (index, object) => presetMenu.removeItem(object)
+        }
+
+        Controls.Menu {
+            id: containerMenu
+
+            title: KI18n.i18nc("@title:menu", "New Tab in Container")
+            icon.name: "utilities-terminal"
+
+            onAboutToShow: root.containerRegistry.refresh()
+
+            Instantiator {
+                model: root.containerRegistry.menuEntries
+
+                delegate: Controls.MenuItem {
+                    required property var modelData
+
+                    text: modelData.label
+                    icon.name: modelData.iconName ?? ""
+                    // Group labels are section headers, the QML
+                    // counterpart of QMenu::addSection: non-
+                    // interactive, small and bold.
+                    enabled: modelData.kind !== "header"
+                    font.bold: modelData.kind === "header"
+                    font.pointSize: modelData.kind === "header" ? Kirigami.Theme.smallFont.pointSize : -1
+
+                    onTriggered: {
+                        if (modelData.kind === "host") {
+                            root.launchOnHost();
+                        } else if (modelData.kind === "container") {
+                            root.launchInContainer(modelData.type, modelData.name);
+                        }
+                    }
+                }
+
+                onObjectAdded: (index, object) => containerMenu.insertItem(index, object)
+                onObjectRemoved: (index, object) => containerMenu.removeItem(object)
+            }
         }
 
         Controls.MenuSeparator {}
@@ -807,6 +863,7 @@ Kirigami.ApplicationWindow {
 
                         Controls.ToolButton {
                             action: newTabAction
+
                             objectName: "newTabButton"
 
                             // Terminal Alt keys are reserved for explicitly configured shortcuts.
@@ -814,6 +871,7 @@ Kirigami.ApplicationWindow {
                             display: Controls.AbstractButton.IconOnly
                             icon.width: Kirigami.Units.iconSizes.small
                             icon.height: Kirigami.Units.iconSizes.small
+
                             Controls.ToolTip.text: newTabAction.text + (newTabAction.shortcut ? " (" + newTabAction.shortcut + ")" : "")
                             Controls.ToolTip.visible: hovered
                             Controls.ToolTip.delay: Kirigami.Units.toolTipDelay

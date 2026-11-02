@@ -24,6 +24,8 @@ class PresetEditor final : public QObject
     Q_PROPERTY(QString selectedName READ selectedName NOTIFY changed)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY changed)
     Q_PROPERTY(QString command READ command WRITE setCommand NOTIFY changed)
+    Q_PROPERTY(QString container READ container WRITE setContainer NOTIFY changed)
+    Q_PROPERTY(bool inheritContainerContext READ inheritContainerContext WRITE setInheritContainerContext NOTIFY changed)
     Q_PROPERTY(int directoryMode READ directoryMode WRITE setDirectoryMode NOTIFY changed)
     Q_PROPERTY(QString directory READ directory WRITE setDirectory NOTIFY changed)
     Q_PROPERTY(QVariantList environmentEntries READ environmentEntries NOTIFY changed)
@@ -37,6 +39,8 @@ public:
     [[nodiscard]] QString selectedName() const;
     [[nodiscard]] QString name() const;
     [[nodiscard]] QString command() const;
+    [[nodiscard]] QString container() const;
+    [[nodiscard]] bool inheritContainerContext() const;
     [[nodiscard]] int directoryMode() const;
     [[nodiscard]] QString directory() const;
     [[nodiscard]] QVariantList environmentEntries() const;
@@ -46,6 +50,8 @@ public:
 
     void setName(const QString &newName);
     void setCommand(const QString &newCommand);
+    void setContainer(const QString &newContainer);
+    void setInheritContainerContext(bool inherit);
     void setDirectoryMode(int mode);
     void setDirectory(const QString &newDirectory);
     Q_INVOKABLE void setDirectoryUrl(const QUrl &url);
@@ -79,6 +85,10 @@ private:
     QString m_name{};
     QString m_command{};
     QString m_savedCommand{};
+    QString m_container{};
+    QString m_savedContainer{};
+    bool m_inheritContainerContext{false};
+    bool m_savedInheritContainerContext{false};
     int m_directoryMode{int(LaunchSettings::DirectoryMode::Current)};
     int m_savedDirectoryMode{int(LaunchSettings::DirectoryMode::Current)};
     QString m_directory{};
