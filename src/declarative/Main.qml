@@ -862,19 +862,54 @@ Kirigami.ApplicationWindow {
                         spacing: Kirigami.Units.smallSpacing
 
                         Controls.ToolButton {
-                            action: newTabAction
+                            id: newTabButton
 
                             objectName: "newTabButton"
 
                             // Terminal Alt keys are reserved for explicitly configured shortcuts.
                             Kirigami.MnemonicData.enabled: false
                             display: Controls.AbstractButton.IconOnly
+                            enabled: newTabAction.enabled
+                            text: newTabAction.text
+                            icon.name: newTabAction.icon.name
                             icon.width: Kirigami.Units.iconSizes.small
                             icon.height: Kirigami.Units.iconSizes.small
 
+                            down: pressed || newTabHoldMenu.visible
+
+                            // A click opens a new tab; pressing and
+                            // holding opens the preset menu instead,
+                            // like Konsole's New Tab button. Keeping
+                            // the menu here too leaves its entries
+                            // reachable when a single preset hides the
+                            // separate preset button.
+                            onClicked: newTabAction.trigger()
+                            onPressAndHold: newTabHoldMenu.open()
+
+                            // Down-arrow hint that holding opens a
+                            // menu, as on Konsole's button.
+                            Kirigami.Icon {
+                                source: "arrow-down"
+                                width: Kirigami.Units.iconSizes.small / 2
+                                height: Kirigami.Units.iconSizes.small / 2
+
+                                anchors.right: parent.right
+                                anchors.bottom: parent.bottom
+                            }
+
                             Controls.ToolTip.text: newTabAction.text + (newTabAction.shortcut ? " (" + newTabAction.shortcut + ")" : "")
-                            Controls.ToolTip.visible: hovered
+                            Controls.ToolTip.visible: hovered && !newTabHoldMenu.visible
                             Controls.ToolTip.delay: Kirigami.Units.toolTipDelay
+
+                            NewTabPresetMenu {
+                                id: newTabHoldMenu
+
+                                modal: true
+                                dim: false
+
+                                objectName: "newTabHoldMenu"
+                                y: root.appSettings.tabBarAtBottom ? -height : newTabButton.height
+                            }
                         }
 
                         Controls.ToolButton {
