@@ -142,7 +142,8 @@ public:
 
     void setScrollbackLines(qint64 lines);
     void setColors(QColor foreground, QColor background, const QVector<QRgb> &palette, QColor boldForeground = {});
-    void setDecorations(QColor cursor, QColor selectionForeground, QColor selectionBackground);
+    // An invalid cursorText color draws the text under a block cursor in the background color.
+    void setDecorations(QColor cursor, QColor cursorText, QColor selectionForeground, QColor selectionBackground);
     void setDefaultCursor(CursorStyle style, bool blinking);
     void setTerminfoName(QByteArrayView name);
     void setApplicationIdentity(QByteArrayView identity);

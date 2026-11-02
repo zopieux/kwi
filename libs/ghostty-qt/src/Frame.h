@@ -88,6 +88,7 @@ struct Frame {
     QColor foreground;
     QColor background;
     QColor cursorColor;
+    QColor cursorTextColor;
     QColor selectionForeground;
     QColor selectionBackground;
 

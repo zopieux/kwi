@@ -58,6 +58,15 @@
         <entry name="cursorBlinking" key="CursorBlinking" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="useCustomCursorColor" key="UseCustomCursorColor" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="customCursorColor" key="CustomCursorColor" type="String">
+            <default>#ffffff</default>
+        </entry>
+        <entry name="customCursorTextColor" key="CustomCursorTextColor" type="String">
+            <default>#000000</default>
+        </entry>
     </group>
     <group name="Behavior">
         <entry name="confirmCloseRunning" key="ConfirmCloseRunning" type="Bool">

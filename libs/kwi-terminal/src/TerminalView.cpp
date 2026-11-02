@@ -576,6 +576,44 @@ void TerminalView::setCursorBlinking(bool blinking)
     Q_EMIT appearanceChanged();
 }
 
+QColor TerminalView::cursorColor() const
+{
+    return m_cursorColor;
+}
+
+void TerminalView::setCursorColor(const QColor &color)
+{
+    const QColor value{color.isValid() ? color : QColor{Qt::transparent}};
+
+    if (m_cursorColor == value) {
+        return;
+    }
+
+    m_cursorColor = value;
+    reloadColors();
+
+    Q_EMIT appearanceChanged();
+}
+
+QColor TerminalView::cursorTextColor() const
+{
+    return m_cursorTextColor;
+}
+
+void TerminalView::setCursorTextColor(const QColor &color)
+{
+    const QColor value{color.isValid() ? color : QColor{Qt::transparent}};
+
+    if (m_cursorTextColor == value) {
+        return;
+    }
+
+    m_cursorTextColor = value;
+    reloadColors();
+
+    Q_EMIT appearanceChanged();
+}
+
 QString TerminalView::selectedText() const
 {
     return m_session ? m_session->selectionText() : QString();
@@ -729,7 +767,10 @@ void TerminalView::applyColors(const TerminalColors &colors)
     }
 
     m_session->setColors(colors.foreground, colors.background, colors.ansi, colors.boldForeground);
-    m_session->terminal()->setDecorations(colors.cursor, colors.selectionForeground, colors.selectionBackground);
+    m_session->terminal()->setDecorations(m_cursorColor.alpha() > 0 ? m_cursorColor : colors.cursor,
+                                          m_cursorTextColor.alpha() > 0 ? m_cursorTextColor : QColor{},
+                                          colors.selectionForeground,
+                                          colors.selectionBackground);
     updateCursorDefaults();
     refresh();
 }

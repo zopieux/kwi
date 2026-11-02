@@ -557,7 +557,7 @@ public:
         if (colored) {
             color = Qt::white;
         } else if (isCursorCell(column, rowCursorColumn, cells) && options.focused && frame.cursorStyle == CursorStyle::Block) {
-            color = frame.background;
+            color = frame.cursorTextColor.isValid() ? frame.cursorTextColor : frame.background;
         } else if (cell.flags & Selected) {
             color = frame.selectionForeground.isValid() ? frame.selectionForeground : frame.background;
         }
@@ -1059,9 +1059,10 @@ void TerminalNode::prepare(const Frame &frame, const Options &options)
         || options.logicalDpi != d->options.logicalDpi;
     const bool terminalChanged{frame.terminalId != d->frame.terminalId};
     const bool appearanceChanged = fontChanged || terminalChanged || frame.foreground != d->frame.foreground || frame.background != d->frame.background
-        || frame.cursorColor != d->frame.cursorColor || frame.selectionForeground != d->frame.selectionForeground
-        || frame.selectionBackground != d->frame.selectionBackground || options.backgroundOpacity != d->options.backgroundOpacity
-        || options.searchForeground != d->options.searchForeground || options.searchBackground != d->options.searchBackground;
+        || frame.cursorColor != d->frame.cursorColor || frame.cursorTextColor != d->frame.cursorTextColor
+        || frame.selectionForeground != d->frame.selectionForeground || frame.selectionBackground != d->frame.selectionBackground
+        || options.backgroundOpacity != d->options.backgroundOpacity || options.searchForeground != d->options.searchForeground
+        || options.searchBackground != d->options.searchBackground;
     const bool cursorChanged = frame.cursor != d->frame.cursor || frame.cursorStyle != d->frame.cursorStyle || frame.cursorVisible != d->frame.cursorVisible
         || frame.cursorBlinking != d->frame.cursorBlinking || frame.cursorWideTail != d->frame.cursorWideTail || options.focused != d->options.focused
         || options.cursorBlinkVisible != d->options.cursorBlinkVisible || options.preedit.isEmpty() != d->options.preedit.isEmpty();

@@ -30,7 +30,7 @@ set(kwi_qml_files
     declarative/TerminalTabButton.qml declarative/SettingsPage.qml declarative/AppearanceSettings.qml
     declarative/ColorSchemeEditor.qml declarative/TerminalSettings.qml declarative/BehaviorSettings.qml
     declarative/KeyboardSettings.qml declarative/TerminalPane.qml declarative/TerminalSearchBar.qml
-    declarative/PresetsSettings.qml declarative/PromptDialogFooter.qml
+    declarative/ColorButton.qml declarative/PresetsSettings.qml declarative/PromptDialogFooter.qml
     declarative/WebShortcutMenu.qml declarative/TabCloseButton.qml
     declarative/+org.kde.desktop/TabCloseButton.qml
     declarative/+org.kde.union/TabCloseButton.qml)

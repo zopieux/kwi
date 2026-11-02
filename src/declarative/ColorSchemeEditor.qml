@@ -5,7 +5,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as Controls
-import QtQuick.Dialogs as Dialogs
 import QtQuick.Layouts
 import org.kde.ki18n
 import org.kde.kirigami as Kirigami
@@ -28,40 +27,8 @@ Controls.Dialog {
     readonly property var colorNames: [KI18n.i18nc("@label:color", "Black"), KI18n.i18nc("@label:color", "Red"), KI18n.i18nc("@label:color", "Green"), KI18n.i18nc("@label:color", "Yellow"), KI18n.i18nc("@label:color", "Blue"), KI18n.i18nc("@label:color", "Magenta"), KI18n.i18nc("@label:color", "Cyan"), KI18n.i18nc("@label:color", "White")]
     readonly property var brightColorNames: [KI18n.i18nc("@label:color", "Bright Black"), KI18n.i18nc("@label:color", "Bright Red"), KI18n.i18nc("@label:color", "Bright Green"), KI18n.i18nc("@label:color", "Bright Yellow"), KI18n.i18nc("@label:color", "Bright Blue"), KI18n.i18nc("@label:color", "Bright Magenta"), KI18n.i18nc("@label:color", "Bright Cyan"), KI18n.i18nc("@label:color", "Bright White")]
 
-    component PaletteColorButton: Controls.Button {
-        id: button
-
-        required property color color
-        property string dialogTitle
-
-        signal accepted(color color)
-
-        Accessible.description: KI18n.i18nc("@info:accessibility", "Current color: %1. Opens a color chooser.", color)
-
+    component PaletteColorButton: ColorButton {
         onActiveFocusChanged: if (activeFocus) root.revealControl(this)
-
-        implicitWidth: Kirigami.Units.gridUnit * 3
-
-        Rectangle {
-            anchors.centerIn: parent
-            width: Math.max(0, button.width - Kirigami.Units.smallSpacing * 2)
-            height: Math.max(0, button.height - Kirigami.Units.smallSpacing * 2)
-            color: button.color
-            border.color: Kirigami.Theme.disabledTextColor
-        }
-
-        onClicked: {
-            picker.selectedColor = color;
-            picker.open();
-        }
-
-        Dialogs.ColorDialog {
-            id: picker
-
-            title: button.dialogTitle
-
-            onAccepted: button.accepted(selectedColor)
-        }
     }
 
     component ColorPairRow: RowLayout {

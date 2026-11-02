@@ -6,6 +6,7 @@
 #include "TerminalSession.h"
 #include "settings/LaunchSettings.h"
 #include "settings/TerminalSettings.h"
+#include <QColor>
 #include <QDir>
 #include <QFont>
 #include <QStringList>
@@ -160,6 +161,18 @@ QVariant property(const TerminalSession *session, const QString &name)
 
     if (name == u"BlinkingCursorEnabled") {
         return settings->cursorBlinking();
+    }
+
+    if (name == u"UseCustomCursorColor") {
+        return settings->useCustomCursorColor();
+    }
+
+    if (name == u"CustomCursorColor") {
+        return QColor{settings->customCursorColor()};
+    }
+
+    if (name == u"CustomCursorTextColor") {
+        return QColor{settings->customCursorTextColor()};
     }
 
     if (name == u"AutoCopySelectedText") {

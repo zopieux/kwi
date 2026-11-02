@@ -401,6 +401,82 @@ SettingsPage {
             }
 
             Forms.FormEntry {
+                title: KI18n.i18nc("@label:radio", "Color:")
+
+                contentItem: ColumnLayout {
+                    spacing: Kirigami.Units.smallSpacing
+
+                    Controls.RadioButton {
+                        objectName: "cursorColorThemeSetting"
+                        text: KI18n.i18nc("@option:radio", "Use theme color")
+                        enabled: !root.appSettings.isUseCustomCursorColorImmutable
+                        checked: !root.appSettings.useCustomCursorColor
+
+                        onToggled: {
+                            root.appSettings.useCustomCursorColor = false;
+                            root.appSettings.save();
+                        }
+                    }
+
+                    Controls.RadioButton {
+                        id: customCursorColor
+
+                        objectName: "cursorColorCustomSetting"
+                        text: KI18n.i18nc("@option:radio", "Custom cursor color")
+                        enabled: !root.appSettings.isUseCustomCursorColorImmutable
+                        checked: root.appSettings.useCustomCursorColor
+
+                        onToggled: {
+                            root.appSettings.useCustomCursorColor = true;
+                            root.appSettings.save();
+                        }
+                    }
+
+                    GridLayout {
+                        Layout.leftMargin: customCursorColor.indicator.width + customCursorColor.spacing
+                        columns: 2
+                        columnSpacing: Kirigami.Units.largeSpacing
+                        rowSpacing: Kirigami.Units.smallSpacing
+                        enabled: customCursorColor.checked
+
+                        Controls.Label {
+                            text: KI18n.i18nc("@label:chooser", "Cursor:")
+                        }
+
+                        ColorButton {
+                            objectName: "customCursorColorButton"
+                            enabled: !root.appSettings.isCustomCursorColorImmutable
+                            color: root.appSettings.customCursorColor
+                            dialogTitle: KI18n.i18nc("@title:window", "Cursor Color")
+                            Accessible.name: KI18n.i18nc("@info:accessibility", "Cursor color")
+
+                            onAccepted: color => {
+                                root.appSettings.customCursorColor = color.toString();
+                                root.appSettings.save();
+                            }
+                        }
+
+                        Controls.Label {
+                            text: KI18n.i18nc("@label:chooser", "Text:")
+                        }
+
+                        ColorButton {
+                            objectName: "customCursorTextColorButton"
+                            enabled: !root.appSettings.isCustomCursorTextColorImmutable
+                            color: root.appSettings.customCursorTextColor
+                            dialogTitle: KI18n.i18nc("@title:window", "Text Color Under Cursor")
+                            Accessible.name: KI18n.i18nc("@info:accessibility", "Text color under the cursor")
+
+                            onAccepted: color => {
+                                root.appSettings.customCursorTextColor = color.toString();
+                                root.appSettings.save();
+                            }
+                        }
+                    }
+                }
+            }
+
+            Forms.FormEntry {
                 contentItem: Controls.CheckBox {
                     objectName: "cursorBlinkingSetting"
                     text: KI18n.i18nc("@option:check", "Blink cursor")
