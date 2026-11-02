@@ -21,6 +21,10 @@ struct LaunchSettings {
     DirectoryMode directoryMode{DirectoryMode::Current};
     QString directory{};
     QStringList environment{};
+    /** Container identifier ("<type>:<name>") to start in; empty runs on the host. */
+    QString container{};
+    /** Start in the container of the currently active session, if it is in one. */
+    bool inheritContainerContext{false};
 
     bool operator==(const LaunchSettings &) const = default;
 };
@@ -29,6 +33,8 @@ struct LaunchRequest {
     std::optional<QStringList> command{};
     QString directory{};
     QString contextDirectory{};
+    /** Disengaged uses the preset's container; engaged (even empty) overrides it. */
+    std::optional<QString> container{};
 };
 
 [[nodiscard]] bool validateLaunchSettings(const LaunchSettings &settings, QString *error = nullptr);

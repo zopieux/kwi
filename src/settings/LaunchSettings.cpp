@@ -3,6 +3,8 @@
 
 #include "LaunchSettings.h"
 
+#include "containers/ContainerInfo.h"
+
 #include <KLocalizedString>
 #include <QDir>
 #include <QStringView>
@@ -85,6 +87,10 @@ bool validateLaunchSettings(const LaunchSettings &settings, QString *error)
         if (size > 65536 || argument.contains(QChar::Null)) {
             return fail(error, i18n("The command is too long or contains a null character."));
         }
+    }
+
+    if (!settings.container.isEmpty() && !isValidContainerId(settings.container)) {
+        return fail(error, i18n("Enter a container as \"toolbox:name\" or \"distrobox:name\", or leave it empty to run on the host."));
     }
 
     switch (settings.directoryMode) {

@@ -67,6 +67,8 @@ std::optional<TerminalPreset> readPreset(const QString &path)
     preset.launch.command = launch.readEntry("Command", QStringList{});
     preset.launch.directory = launch.readEntry("Directory", QString{});
     preset.launch.environment = launch.readEntry("Environment", QStringList{});
+    preset.launch.container = launch.readEntry("Container", QString{});
+    preset.launch.inheritContainerContext = launch.readEntry("InheritContainerContext", false);
     const QString mode{launch.readEntry("DirectoryMode", QStringLiteral("Current"))};
 
     if (mode == QLatin1String("Current")) {
@@ -97,6 +99,8 @@ bool writePreset(const QString &path, const QString &name, const LaunchSettings 
     values.writeEntry("DirectoryMode", mode);
     values.writeEntry("Directory", launch.directoryMode == LaunchSettings::DirectoryMode::Custom ? launch.directory : QString{});
     values.writeEntry("Environment", launch.environment);
+    values.writeEntry("Container", launch.container);
+    values.writeEntry("InheritContainerContext", launch.inheritContainerContext);
 
     return config.sync();
 }

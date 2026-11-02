@@ -18,6 +18,7 @@ Q_MOC_INCLUDE("TerminalSession.h")
 namespace Kwi
 {
 struct LaunchRequest;
+class ContainerRegistry;
 class TerminalSettings;
 class TerminalPresets;
 class TerminalSession;
@@ -43,7 +44,7 @@ public:
     };
     Q_ENUM(CloseScope)
 
-    SessionModel(TerminalSettings *settings, TerminalPresets *presets, QObject *parent = nullptr);
+    SessionModel(TerminalSettings *settings, TerminalPresets *presets, ContainerRegistry *containers, QObject *parent = nullptr);
 
     [[nodiscard]] int rowCount(const QModelIndex &parent = {}) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
@@ -63,6 +64,8 @@ public:
 
     Q_INVOKABLE void newSession();
     Q_INVOKABLE bool newSessionWithPreset(const QString &name);
+    Q_INVOKABLE bool newSessionInContainer(const QString &type, const QString &name);
+    Q_INVOKABLE bool newSessionOnHost();
     Q_INVOKABLE void newWindow();
     Q_INVOKABLE void closeApplication(bool force = false);
     Q_INVOKABLE void detachSession(int index);
@@ -100,6 +103,7 @@ private:
 
     TerminalSettings *m_settings;
     TerminalPresets *m_presets;
+    ContainerRegistry *m_containers;
     QList<TerminalSession *> m_sessions{};
     QList<QPointer<TerminalSession>> m_closing{};
     std::optional<CloseRequest> m_pendingClose;

@@ -41,6 +41,9 @@ public:
     [[nodiscard]] QString iconName() const;
     [[nodiscard]] QString customTitle() const;
     void setCustomTitle(const QString &newTitle);
+    [[nodiscard]] QString launchContainerId() const;
+    void setLaunchContainerId(const QString &id);
+    [[nodiscard]] bool hasRunningCommand() const;
     [[nodiscard]] bool attention() const;
     void setAttention(bool newAttention);
     [[nodiscard]] bool holdOpen() const;
@@ -62,6 +65,7 @@ private:
     TerminalPreset m_preset{};
     SessionTitleFormatter m_titleFormatter;
     QString m_customTitle;
+    QString m_launchContainerId;
     bool m_attention{false};
     bool m_holdOpen{false};
 };

@@ -7,6 +7,7 @@
 #include "Session.h"
 #include "SessionModel.h"
 #include "TerminalSession.h"
+#include "containers/ContainerRegistry.h"
 #include "settings/PresetEditor.h"
 #include "settings/TerminalPaletteModel.h"
 #include "settings/TerminalPresets.h"
@@ -38,10 +39,10 @@ namespace Kwi
 class WindowManager::WindowContext final : public QObject
 {
 public:
-    WindowContext(TerminalSettings *settings, TerminalPresets *presets, QObject *parent)
+    WindowContext(TerminalSettings *settings, TerminalPresets *presets, ContainerRegistry *containers, QObject *parent)
         : QObject{parent}
         , sharedSettings{settings}
-        , sessions{new SessionModel{settings, presets, this}}
+        , sessions{new SessionModel{settings, presets, containers, this}}
         , desktop{new DesktopIntegration{sessions, DesktopIntegration::Mode::Standalone, this}}
         , engine{new QQmlApplicationEngine{this}}
     {
@@ -76,6 +77,7 @@ WindowManager::WindowManager(TerminalSettings *settings, TerminalPresets *preset
     : QObject{parent}
     , m_settings{settings}
     , m_presets{presets}
+    , m_containers{new ContainerRegistry{this}}
     , m_shortcuts{shortcuts}
     , m_palettes{palettes}
 {
@@ -258,7 +260,7 @@ void WindowManager::disposeWindow(WindowContext *context)
 
 WindowManager::WindowContext *WindowManager::createWindow()
 {
-    auto *context = new WindowContext{m_settings, m_presets, this};
+    auto *context = new WindowContext{m_settings, m_presets, m_containers, this};
     KLocalization::setupLocalizedContext(context->engine);
     context->engine->setInitialProperties({
         {QStringLiteral("appSettings"), QVariant::fromValue(m_settings)},
@@ -267,6 +269,7 @@ WindowManager::WindowContext *WindowManager::createWindow()
         {QStringLiteral("appShortcuts"), QVariant::fromValue(m_shortcuts)},
         {QStringLiteral("terminalPalettes"), QVariant::fromValue(m_palettes)},
         {QStringLiteral("sessionModel"), QVariant::fromValue(context->sessions)},
+        {QStringLiteral("containerRegistry"), QVariant::fromValue(m_containers)},
         {QStringLiteral("desktopIntegration"), QVariant::fromValue(context->desktop)},
         {QStringLiteral("tabDragController"), QVariant::fromValue(this)},
     });

@@ -5,6 +5,8 @@
 #include "RunningCommandCheck.h"
 #include "Session.h"
 #include "TerminalSession.h"
+#include "containers/ContainerInfo.h"
+#include "containers/ContainerRegistry.h"
 #include "settings/LaunchSettings.h"
 #include "settings/TerminalPresets.h"
 #include "settings/TerminalSettings.h"
@@ -16,10 +18,11 @@
 
 namespace Kwi
 {
-SessionModel::SessionModel(TerminalSettings *settings, TerminalPresets *presets, QObject *parent)
+SessionModel::SessionModel(TerminalSettings *settings, TerminalPresets *presets, ContainerRegistry *containers, QObject *parent)
     : QAbstractListModel{parent}
     , m_settings{settings}
     , m_presets{presets}
+    , m_containers{containers}
 {
 }
 
@@ -98,6 +101,20 @@ bool SessionModel::newSessionWithPreset(const QString &name)
     return launchSession({.contextDirectory = currentSession() ? currentSession()->workingDirectory() : QDir::currentPath()}, name);
 }
 
+bool SessionModel::newSessionInContainer(const QString &type, const QString &name)
+{
+    const auto *current = currentSession();
+    return launchSession({.contextDirectory = current ? current->workingDirectory() : QDir::currentPath(), .container = containerId(type, name)},
+                         current ? current->currentPresetName() : m_presets->defaultPresetName());
+}
+
+bool SessionModel::newSessionOnHost()
+{
+    const auto *current = currentSession();
+    return launchSession({.contextDirectory = current ? current->workingDirectory() : QDir::currentPath(), .container = QString{}},
+                         current ? current->currentPresetName() : m_presets->defaultPresetName());
+}
+
 bool SessionModel::launchSession(const LaunchRequest &request, const QString &presetName, bool hold, const QString &title)
 {
     auto ownedSession = std::make_unique<TerminalSession>(m_settings, m_presets);
@@ -106,11 +123,40 @@ bool SessionModel::launchSession(const LaunchRequest &request, const QString &pr
         return false;
     }
 
+    // Resolve the container the session starts in, with Konsole's
+    // precedence: an explicit request wins; then, when the preset
+    // asks to inherit, the current session's launch container; then
+    // the preset's own. An unresolvable identifier fails the launch
+    // rather than silently opening a host session.
+    const LaunchSettings presetLaunch{ownedSession->launchSettings()};
+    LaunchRequest effectiveRequest{request};
+    QString container{effectiveRequest.container.value_or(presetLaunch.container)};
+
+    if (!effectiveRequest.container.has_value() && presetLaunch.inheritContainerContext) {
+        if (const auto *current = currentSession(); current && !current->launchContainerId().isEmpty()) {
+            container = current->launchContainerId();
+        }
+    }
+
+    if (!container.isEmpty()) {
+        const QStringList entryCommand{m_containers->entryCommandForId(container)};
+
+        if (entryCommand.isEmpty()) {
+            return false;
+        }
+
+        effectiveRequest.command = entryCommand;
+    }
+
     // Capture the launch before observers can change presets or move the session.
-    const TerminalLaunch launch{resolveLaunch(ownedSession->launchSettings(), request)};
+    const TerminalLaunch launch{resolveLaunch(presetLaunch, effectiveRequest)};
     auto *session = ownedSession.release();
     session->setHoldOpen(hold);
     session->setCustomTitle(title);
+
+    if (!container.isEmpty()) {
+        session->setLaunchContainerId(container);
+    }
     adoptSession(session);
     QTimer::singleShot(0, session, [session, launch] {
         session->start(launch);

@@ -157,6 +157,30 @@ void TerminalSession::setCustomTitle(const QString &newTitle)
     Q_EMIT titleChanged();
 }
 
+QString TerminalSession::launchContainerId() const
+{
+    return m_launchContainerId;
+}
+
+void TerminalSession::setLaunchContainerId(const QString &id)
+{
+    m_launchContainerId = id;
+}
+
+bool TerminalSession::hasRunningCommand() const
+{
+    if (!isBusy()) {
+        return false;
+    }
+
+    // A session launched into a container runs the entry command as
+    // its own process, permanently in the foreground; the entry
+    // process itself is not worth warning about when closing, and
+    // what runs inside the container is not visible from the host
+    // side in the first place.
+    return m_launchContainerId.isEmpty() || foregroundCommandId() != processId();
+}
+
 bool TerminalSession::attention() const
 {
     return m_attention;
