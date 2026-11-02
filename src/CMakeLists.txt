@@ -107,3 +107,7 @@ if(BUILD_KPART)
 endif()
 
 install(TARGETS kwi ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+
+if(BUILD_TESTING)
+    add_subdirectory(autotests)
+endif()
