@@ -74,15 +74,6 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function launchOnHost(): void {
-        if (root.sessionModel.newSessionOnHost()) {
-            root.focusTerminal();
-
-        } else {
-            root.showPassiveNotification(KI18n.i18nc("@info", "The terminal preset is no longer available."));
-        }
-    }
-
     component NewTabPresetMenu: Controls.Menu {
         id: presetMenu
 
@@ -130,9 +121,7 @@ Kirigami.ApplicationWindow {
                     font.pointSize: modelData.kind === "header" ? Kirigami.Theme.smallFont.pointSize : -1
 
                     onTriggered: {
-                        if (modelData.kind === "host") {
-                            root.launchOnHost();
-                        } else if (modelData.kind === "container") {
+                        if (modelData.kind === "container") {
                             root.launchInContainer(modelData.type, modelData.name);
                         }
                     }

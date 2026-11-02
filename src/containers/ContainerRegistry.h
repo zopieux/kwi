@@ -21,9 +21,9 @@ class ContainerDetector;
  * The set of containers new sessions can be started in.
  *
  * Owns one detector per container tool, caches their listings, and
- * builds the flattened entry list the New Tab menu renders: a Host
- * entry first, then one section per tool that has containers. The
- * entry command for an identifier does not depend on the listing.
+ * builds the flattened entry list the New Tab menu renders: one
+ * section per tool that has containers. The entry command for an
+ * identifier does not depend on the listing.
  */
 // Not final: Qt's QML type registration derives a wrapper from
 // QML_ELEMENT types (QQmlElement<T>), which a final class forbids.
@@ -39,8 +39,8 @@ public:
 
     /**
      * Flattened menu model. Each entry is a map with a "kind" of
-     * "header", "host" or "container", a "label", and for containers
-     * also "type", "name" and "iconName".
+     * "header" or "container", a "label", and for containers also
+     * "type", "name" and "iconName".
      */
     [[nodiscard]] QVariantList menuEntries() const;
 

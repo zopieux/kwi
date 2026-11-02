@@ -122,9 +122,9 @@ void ContainerRegistryTest::menuAndEntryCommands()
     // Copy-initialization on purpose: QVariantList{list} would build a
     // one-element list holding the whole list as a single QVariant.
     const QVariantList entries = registry.menuEntries();
-    QCOMPARE(entries.size(), 10);
+    QCOMPARE(entries.size(), 8);
     QCOMPARE(entries.at(0).toMap().value(QStringLiteral("kind")).toString(), QStringLiteral("header"));
-    QCOMPARE(entries.at(1).toMap().value(QStringLiteral("kind")).toString(), QStringLiteral("host"));
+    QCOMPARE(entries.at(1).toMap().value(QStringLiteral("kind")).toString(), QStringLiteral("container"));
 
     const QStringList labels{menuLabels(registry)};
     QVERIFY(labels.contains(QStringLiteral("Toolbox")));

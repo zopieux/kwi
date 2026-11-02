@@ -65,7 +65,6 @@ public:
     Q_INVOKABLE void newSession();
     Q_INVOKABLE bool newSessionWithPreset(const QString &name);
     Q_INVOKABLE bool newSessionInContainer(const QString &type, const QString &name);
-    Q_INVOKABLE bool newSessionOnHost();
     Q_INVOKABLE void newWindow();
     Q_INVOKABLE void closeApplication(bool force = false);
     Q_INVOKABLE void detachSession(int index);

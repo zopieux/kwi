@@ -108,13 +108,6 @@ bool SessionModel::newSessionInContainer(const QString &type, const QString &nam
                          current ? current->currentPresetName() : m_presets->defaultPresetName());
 }
 
-bool SessionModel::newSessionOnHost()
-{
-    const auto *current = currentSession();
-    return launchSession({.contextDirectory = current ? current->workingDirectory() : QDir::currentPath(), .container = QString{}},
-                         current ? current->currentPresetName() : m_presets->defaultPresetName());
-}
-
 bool SessionModel::launchSession(const LaunchRequest &request, const QString &presetName, bool hold, const QString &title)
 {
     auto ownedSession = std::make_unique<TerminalSession>(m_settings, m_presets);

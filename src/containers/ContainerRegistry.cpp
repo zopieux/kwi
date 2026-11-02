@@ -9,8 +9,6 @@
 #include "KapsuleDetector.h"
 #include "ToolboxDetector.h"
 
-#include <KLocalizedString>
-#include <QSysInfo>
 #include <QTimer>
 #include <QVariantMap>
 
@@ -78,17 +76,6 @@ void ContainerRegistry::refresh()
 void ContainerRegistry::rebuildEntries()
 {
     QVariantList entries;
-
-    QString hostName{QSysInfo::machineHostName()};
-
-    if (hostName.isEmpty()) {
-        hostName = i18nc("@item:inmenu container host", "This Computer");
-    }
-
-    entries.append(QVariantMap{{QStringLiteral("kind"), QStringLiteral("header")}, {QStringLiteral("label"), i18nc("@title:menu container section", "Host")}});
-    entries.append(QVariantMap{{QStringLiteral("kind"), QStringLiteral("host")},
-                               {QStringLiteral("label"), hostName},
-                               {QStringLiteral("iconName"), QStringLiteral("computer")}});
 
     for (const auto *detector : m_detectors) {
         const QStringList names{m_names.value(detector->typeId())};
