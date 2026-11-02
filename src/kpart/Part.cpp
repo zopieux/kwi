@@ -9,6 +9,7 @@
 #include "SessionModel.h"
 #include "TerminalSession.h"
 #include "TerminalView.h"
+#include "containers/ContainerRegistry.h"
 #include "settings/TerminalPresets.h"
 #include "settings/TerminalSettings.h"
 #include "ui/SettingsDialog.h"
@@ -130,7 +131,8 @@ Part::Part(QWidget *, QObject *parent, const KPluginMetaData &metadata, const QV
     : KParts::ReadOnlyPart{parent, metadata}
     , m_settings{new TerminalSettings(this)}
     , m_presets{new TerminalPresets(m_settings, this)}
-    , m_sessions{new SessionModel(m_settings, m_presets, this)}
+    , m_containers{new ContainerRegistry{this}}
+    , m_sessions{new SessionModel(m_settings, m_presets, m_containers, this)}
     , m_desktop{new DesktopIntegration(m_sessions, DesktopIntegration::Mode::Embedded, this)}
     , m_tabs{new QTabWidget}
     , m_terminalClient{std::make_unique<TerminalActionsClient>()}
