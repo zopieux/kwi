@@ -11,6 +11,12 @@ add_library(kwi-core STATIC
     settings/TerminalPresets.cpp
     settings/PresetEditor.cpp
     settings/TerminalPaletteModel.cpp
+    containers/ContainerInfo.cpp
+    containers/ContainerDetector.h
+    containers/ShellContainerDetector.cpp
+    containers/ToolboxDetector.cpp
+    containers/DistroboxDetector.cpp
+    containers/ContainerRegistry.cpp
 )
 kconfig_add_kcfg_files(kwi-core GENERATE_MOC settings/TerminalPreferences.kcfgc)
 install(FILES settings/TerminalPreferences.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
@@ -73,7 +79,7 @@ target_link_libraries(kwi-ui INTERFACE kwi-uiplugin)
 target_compile_definitions(kwi-ui PRIVATE TRANSLATION_DOMAIN="kwi")
 target_link_libraries(kwi-ui PUBLIC kwi-core Qt6::Quick
     PRIVATE Qt6::QuickControls2 Qt6::Widgets Qt6::DBus KF6::CoreAddons KF6::KIOGui KF6::I18nQml KF6::Kirigami KF6::KirigamiPlatform KF6::KirigamiActionCollection KF6::WindowSystem)
-target_include_directories(kwi-ui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" PRIVATE settings ui)
+target_include_directories(kwi-ui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" PRIVATE settings ui containers)
 
 qt_add_executable(kwi main.cpp)
 target_link_libraries(kwi PRIVATE kwi-ui Qt6::Widgets KirigamiApp KF6::CoreAddons
