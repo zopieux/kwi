@@ -21,6 +21,8 @@ TerminalComponents.Terminal {
     view.backgroundOpacity: settings ? settings.backgroundOpacity : 1
     view.cursorStyle: settings ? settings.cursorStyle : "block"
     view.cursorBlinking: settings ? settings.cursorBlinking : false
+    view.cursorColor: settings && settings.useCustomCursorColor ? settings.customCursorColor : "transparent"
+    view.cursorTextColor: settings && settings.useCustomCursorColor ? settings.customCursorTextColor : "transparent"
     view.confirmMultilinePaste: settings ? settings.confirmMultilinePaste : true
     view.copyOnSelect: settings ? settings.copyOnSelect : false
     view.requireCtrlForLinks: settings ? settings.requireCtrlForLinks : true

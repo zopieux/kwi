@@ -8,6 +8,7 @@
 
 #include <KLocalizedString>
 #include <KSharedConfig>
+#include <QColor>
 #include <QEvent>
 #include <QFont>
 #include <QFontDatabase>
@@ -43,6 +44,9 @@ TerminalSettings::TerminalSettings(QObject *parent)
                                 &TerminalPreferences::windowTitleFromApplicationChanged,
                                 &TerminalPreferences::cursorStyleChanged,
                                 &TerminalPreferences::cursorBlinkingChanged,
+                                &TerminalPreferences::useCustomCursorColorChanged,
+                                &TerminalPreferences::customCursorColorChanged,
+                                &TerminalPreferences::customCursorTextColorChanged,
                                 &TerminalPreferences::confirmCloseRunningChanged,
                                 &TerminalPreferences::confirmMultilinePasteChanged,
                                 &TerminalPreferences::copyOnSelectChanged,
@@ -85,6 +89,14 @@ void TerminalSettings::usrRead()
 
     if (!SettingsConstraints::isValidCursorStyle(TerminalPreferences::cursorStyle())) {
         TerminalPreferences::setCursorStyle(defaultCursorStyleValue());
+    }
+
+    if (!QColor::isValidColorName(TerminalPreferences::customCursorColor())) {
+        TerminalPreferences::setCustomCursorColor(defaultCustomCursorColorValue());
+    }
+
+    if (!QColor::isValidColorName(TerminalPreferences::customCursorTextColor())) {
+        TerminalPreferences::setCustomCursorTextColor(defaultCustomCursorTextColorValue());
     }
 
     if (TerminalPreferences::scrollbackLines() < -1) {

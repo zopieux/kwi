@@ -46,6 +46,9 @@ class KWI_TERMINAL_EXPORT TerminalView : public QQuickItem
     Q_PROPERTY(qreal backgroundOpacity READ backgroundOpacity WRITE setBackgroundOpacity NOTIFY backgroundOpacityChanged)
     Q_PROPERTY(QString cursorStyle READ cursorStyle WRITE setCursorStyle NOTIFY appearanceChanged)
     Q_PROPERTY(bool cursorBlinking READ cursorBlinking WRITE setCursorBlinking NOTIFY appearanceChanged)
+    // Transparent colors keep the colors of the color scheme.
+    Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor NOTIFY appearanceChanged)
+    Q_PROPERTY(QColor cursorTextColor READ cursorTextColor WRITE setCursorTextColor NOTIFY appearanceChanged)
     Q_PROPERTY(bool confirmMultilinePaste MEMBER m_confirmMultilinePaste NOTIFY confirmMultilinePasteChanged)
     Q_PROPERTY(bool copyOnSelect MEMBER m_copyOnSelect NOTIFY copyOnSelectChanged)
     Q_PROPERTY(bool requireCtrlForLinks READ requireCtrlForLinks WRITE setRequireCtrlForLinks NOTIFY requireCtrlForLinksChanged)
@@ -86,6 +89,10 @@ public:
     void setCursorStyle(const QString &style);
     [[nodiscard]] bool cursorBlinking() const;
     void setCursorBlinking(bool blinking);
+    [[nodiscard]] QColor cursorColor() const;
+    void setCursorColor(const QColor &color);
+    [[nodiscard]] QColor cursorTextColor() const;
+    void setCursorTextColor(const QColor &color);
     [[nodiscard]] bool requireCtrlForLinks() const;
     void setRequireCtrlForLinks(bool required);
 
@@ -217,6 +224,8 @@ private:
     QString m_fontFamily;
     QString m_colorScheme{QStringLiteral("system")};
     QString m_cursorStyle{QStringLiteral("block")};
+    QColor m_cursorColor{Qt::transparent};
+    QColor m_cursorTextColor{Qt::transparent};
 
     TerminalSearch *m_search;
     QRegion m_searchMatches;

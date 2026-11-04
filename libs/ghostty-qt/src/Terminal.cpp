@@ -455,6 +455,7 @@ public:
         frame.background = QColor::fromRgb(rgb(colors.background));
         frame.foreground = QColor::fromRgb(rgb(colors.foreground));
         frame.cursorColor = QColor::fromRgb(rgb(colors.cursor_has_value ? colors.cursor : colors.foreground));
+        frame.cursorTextColor = cursorTextColor;
         frame.selectionForeground = selectionForeground;
         frame.selectionBackground = selectionBackground;
         frame.cursor = cursor.viewport_has_value ? QPoint(cursor.viewport_x, cursor.viewport_y) : QPoint(-1, -1);
@@ -728,6 +729,7 @@ public:
     QSize cellPixels{1, 1};
     Frame frame;
     QColor boldForeground;
+    QColor cursorTextColor;
     QColor selectionForeground;
     QColor selectionBackground;
     bool held{false};
@@ -1080,11 +1082,12 @@ void Terminal::setColors(QColor foreground, QColor background, const QVector<QRg
     }
 }
 
-void Terminal::setDecorations(QColor cursor, QColor selectionForeground, QColor selectionBackground)
+void Terminal::setDecorations(QColor cursor, QColor cursorText, QColor selectionForeground, QColor selectionBackground)
 {
     d->assertThread();
     auto color = rgb(cursor);
     ghostty_terminal_set(d->terminal, GHOSTTY_TERMINAL_OPT_COLOR_CURSOR, cursor.isValid() ? &color : nullptr);
+    d->cursorTextColor = cursorText;
     d->selectionForeground = selectionForeground;
     d->selectionBackground = selectionBackground;
 
