@@ -137,6 +137,61 @@ FocusScope {
         }
     }
 
+    Controls.Control {
+        id: sizeHint
+
+        objectName: "sizeHintTooltip" // TODO: why?
+        anchors.centerIn: terminal
+
+        property string text: ""
+
+        Connections {
+            target: root.session
+
+            function onGridSizeChanged(): void {
+                sizeHint.text = translations.i18nc("@info:tooltip", "Size: %1 × %2", session.gridSize.width, session.gridSize.height);
+                sizeHintClearTimer.restart();
+            }
+        }
+
+        Timer {
+            id: sizeHintClearTimer
+            interval: Kirigami.Units.humanMoment / 2
+
+            onTriggered: {
+                sizeHint.text = "";
+            }
+        }
+
+        opacity: text.length === 0 ? 0 : 1
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Kirigami.Units.shortDuration
+                easing.type: Easing.InOutQuad
+            }
+        }
+        visible: opacity > 0
+
+        padding: Kirigami.Units.smallSpacing + background.border.width
+
+        background: Rectangle {
+            color: Kirigami.Theme.backgroundColor
+            radius: Kirigami.Units.cornerRadius
+            border.width: 1
+            border.color: Kirigami.ColorUtils.linearInterpolation(
+                Kirigami.Theme.backgroundColor,
+                Kirigami.Theme.textColor,
+                Kirigami.Theme.frameContrast
+            )
+        }
+
+        contentItem: Controls.Label {
+            text: sizeHint.text.length === 0 ? text : sizeHint.text
+            maximumLineCount: 1
+            elide: Text.ElideMiddle
+        }
+    }
+
     Rectangle {
         anchors.fill: scrollbar
         color: scrollbar.Kirigami.Theme.backgroundColor

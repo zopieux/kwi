@@ -327,6 +327,13 @@ class KWI_TERMINAL_EXPORT Session : public QObject
      * when unknown. Interpret it together with progressState.
      */
     Q_PROPERTY(int progressPercent READ progressPercent NOTIFY progressChanged)
+    /*!
+     * \qmlproperty int Session::gridSize
+     * \readonly
+     * The size in rows and columns (as width and height respectively)
+     * of the terminal session.
+     */
+    Q_PROPERTY(QSize gridSize READ gridSize NOTIFY gridSizeChanged)
 
 public:
     enum class State {
@@ -429,6 +436,7 @@ public:
     void setSilenceSeconds(int seconds);
     [[nodiscard]] ProgressState progressState() const;
     [[nodiscard]] int progressPercent() const;
+    [[nodiscard]] QSize gridSize() const;
 
     /*!
      * \qmlmethod bool Session::sendInput(string text)
@@ -568,6 +576,7 @@ Q_SIGNALS:
      * Both strings come from terminal output and should be treated as plain text.
      */
     void notificationRequested(const QString &title, const QString &body);
+    void gridSizeChanged();
 
 private:
     friend class TerminalView;
